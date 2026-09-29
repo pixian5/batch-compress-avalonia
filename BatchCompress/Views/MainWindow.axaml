@@ -1,0 +1,89 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:BatchCompress.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
+        x:Class="BatchCompress.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="批量压缩与解压">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Compression Items List -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="待压缩项目:" Margin="0,0,0,5"/>
+            <ListBox x:Name="CompressionItemsListBox" 
+                     ItemsSource="{Binding CompressionItems, Mode=OneWay}" 
+                     SelectedIndex="{Binding SelectedCompressionItemIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                     Height="200" Margin="0,0,0,5">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="vm:CompressionItem">
+                        <TextBlock Text="{Binding DisplayName, Mode=OneWay}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="添加文件夹" Command="{Binding AddFolderCommand}" Margin="5,0"/>
+                <Button Content="添加文件" Command="{Binding AddFileCommand}" Margin="5,0"/>
+                <Button Content="移除选中" Command="{Binding RemoveCompressionItemCommand}" Margin="5,0"/>
+                <Button Content="清空列表" Command="{Binding ClearCompressionItemsCommand}" Margin="5,0"/>
+                <Button Content="计算MD5" Command="{Binding ComputeMd5Command}" Margin="5,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Save Path -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="压缩文件保存到:" Width="150" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding SavePath}" Width="400" Margin="5,0"/>
+            <Button Content="选择保存" Command="{Binding SelectSaveCommand}" Margin="5,0"/>
+        </StackPanel>
+
+        <!-- Options -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="格式:" VerticalAlignment="Center" Margin="5"/>
+            <ComboBox SelectedItem="{Binding ArchiveFormat}" ItemsSource="{Binding ArchiveFormats}" Width="80" Margin="5"/>
+            <TextBlock Text="级别:" VerticalAlignment="Center" Margin="5"/>
+            <ComboBox SelectedItem="{Binding CompressionLevel}" ItemsSource="{Binding CompressionLevels}" Width="80" Margin="5"/>
+            <CheckBox Content="随机密码" IsChecked="{Binding UseRandomPassword}" Margin="5"/>
+            <TextBox Text="{Binding Password}" Width="100" Margin="5" Watermark="密码"/>
+            <CheckBox Content="固实" IsChecked="{Binding SolidArchive}" Margin="5"/>
+            <CheckBox Content="不压缩已压缩文件" IsChecked="{Binding SkipCompressed}" Margin="5"/>
+            <TextBlock Text="分割大小:" VerticalAlignment="Center" Margin="5"/>
+            <TextBox Text="{Binding SplitSize}" Width="80" Margin="5" Watermark="如100m"/>
+        </StackPanel>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button Content="压缩" Command="{Binding CompressCommand}" Width="80" Margin="5"/>
+            <Button Content="解压" Command="{Binding DecompressCommand}" Width="80" Margin="5"/>
+            <Button Content="测试" Command="{Binding TestArchiveCommand}" Width="80" Margin="5"/>
+            <Button Content="关于" Command="{Binding AboutCommand}" Width="80" Margin="5"/>
+            <Button Content="保存设置" Command="{Binding SaveSettingsCommand}" Width="80" Margin="5"/>
+            <Button Content="取消" Command="{Binding CancelCommand}" Width="80" Margin="5"/>
+        </StackPanel>
+
+        <!-- Progress -->
+        <StackPanel Grid.Row="4" Margin="0,0,0,10">
+            <TextBlock Text="{Binding Status}" Margin="0,0,0,5"/>
+            <ProgressBar Value="{Binding Progress}" Maximum="100" Height="20"/>
+            <TextBlock Text="{Binding ProgressText}" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- Logs -->
+        <TextBox Grid.Row="5" Text="{Binding Logs}" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"/>
+    </Grid>
+
+</Window>
